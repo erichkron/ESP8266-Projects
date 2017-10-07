@@ -35,10 +35,10 @@ const char* off_cmd = "OFF";
 const int BUFFER_SIZE = JSON_OBJECT_SIZE(10);
 
 // Maintained state for reporting to HA
-byte red = 255;
-byte green = 255;
-byte blue = 255;
-byte brightness = 255;
+byte red = 1023;
+byte green = 1023;
+byte blue = 1023;
+byte brightness = 1023;
 
 // Real values to write to the LEDs (ex. including brightness and state)
 byte realRed = 0;
@@ -77,7 +77,7 @@ void setup() {
   pinMode(txPin, OUTPUT);
   digitalWrite(txPin, HIGH); // Turn off the on-board LED
 
-  analogWriteRange(255);
+  analogWriteRange(1023);
 
   Serial.begin(115200);
   setup_wifi();
@@ -111,7 +111,7 @@ void setup_wifi() {
   {
     "brightness": 120,
     "color": {
-      "r": 255,
+      "r": 1023,
       "g": 100,
       "b": 100
     },
@@ -138,9 +138,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if (stateOn) {
     // Update lights
-    realRed = map(red, 0, 255, 0, brightness);
-    realGreen = map(green, 0, 255, 0, brightness);
-    realBlue = map(blue, 0, 255, 0, brightness);
+    realRed = map(red, 0, 1023, 0, brightness);
+    realGreen = map(green, 0, 1023, 0, brightness);
+    realBlue = map(blue, 0, 1023, 0, brightness);
   }
   else {
     realRed = 0;
@@ -195,9 +195,9 @@ bool processJson(char* message) {
       flashBlue = blue;
     }
 
-    flashRed = map(flashRed, 0, 255, 0, flashBrightness);
-    flashGreen = map(flashGreen, 0, 255, 0, flashBrightness);
-    flashBlue = map(flashBlue, 0, 255, 0, flashBrightness);
+    flashRed = map(flashRed, 0, 1023, 0, flashBrightness);
+    flashGreen = map(flashGreen, 0, 1023, 0, flashBrightness);
+    flashBlue = map(flashBlue, 0, 1023, 0, flashBrightness);
 
     flash = true;
     startFlash = true;
@@ -405,9 +405,9 @@ int calculateVal(int step, int val, int i) {
     }
   }
 
-  // Defensive driving: make sure val stays in the range 0-255
-  if (val > 255) {
-    val = 255;
+  // Defensive driving: make sure val stays in the range 0-1023
+  if (val > 1023) {
+    val = 1023;
   }
   else if (val < 0) {
     val = 0;
